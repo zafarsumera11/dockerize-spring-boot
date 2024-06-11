@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: my-mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: docker_space
+    ports:
+      - "3307:3306"  # Map MySQL container's port 3306 to host port 3307
+    networks:
+      - my-network
+
+  my-application:
+    image: dockerize-spring-boot:latest
+    container_name: my-application-container
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql-container:3307/docker_space
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
